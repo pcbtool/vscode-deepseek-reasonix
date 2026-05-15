@@ -14,8 +14,8 @@
 ### 从 VSIX 安装
 
 ```bash
-git clone https://github.com/summving/deepseek-reasonix.git
-cd deepseek-reasonix
+git clone git@github.com:pcbtool/vscode-deepseek-reasonix.git
+cd vscode-deepseek-reasonix
 npx @vscode/vsce package
 code --install-extension deepseek-reasonix-*.vsix
 ```
@@ -36,7 +36,7 @@ code --install-extension deepseek-reasonix-*.vsix
 ## 项目结构
 
 ```
-deepseek-reasonix/
+vscode-deepseek-reasonix/
 ├── .gitignore        # Git 忽略规则
 ├── .vscodeignore     # 打包忽略规则
 ├── LICENSE           # MIT 许可证
