@@ -12,11 +12,13 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/pcbtool/vscode-deepseek-reasonix/blob/main/LICENSE)
 [![GitHub](https://img.shields.io/badge/GitHub-pcbtool%2Fvscode--deepseek--reasonix-181717?logo=github)](https://github.com/pcbtool/vscode-deepseek-reasonix)
 
+**🌐 语言切换 · Language:** <a href="#chinese">🇨🇳 中文</a> &nbsp;|&nbsp; <a href="#english">🇬🇧 English</a>
+
 </div>
 
 ---
 
-## 🇨🇳 中文
+<h2 id="chinese">🇨🇳 中文</h2>
 
 在 VS Code 中一键启动 **Reasonix**，免去手动输入命令的繁琐。
 
@@ -54,9 +56,11 @@ npx @vscode/vsce package
 code --install-extension deepseek-reasonix-*.vsix
 ```
 
+<p align="right"><a href="#readme">⬆ 返回顶部 · Back to top</a></p>
+
 ---
 
-## 🇬🇧 English
+<h2 id="english">🇬🇧 English</h2>
 
 Launch **Reasonix** in VS Code with one click — no need to type commands manually.
 
