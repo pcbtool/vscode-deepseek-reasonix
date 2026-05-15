@@ -1,0 +1,48 @@
+{
+  "name": "deepseek-reasonix",
+  "displayName": "Summving",
+  "description": "DeepSeek 小鲸鱼 — 一键在右侧终端中启动 Reasonix",
+  "version": "0.2.0",
+  "publisher": "summving",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onView:reasonix.sidebar"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "reasonix",
+          "title": "Reasonix",
+          "icon": "icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "reasonix": [
+        {
+          "type": "webview",
+          "id": "reasonix.sidebar",
+          "name": "Reasonix"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "reasonix.launch",
+        "title": "Reasonix: 启动终端"
+      }
+    ]
+  },
+  "scripts": {
+    "package": "npx @vscode/vsce package",
+    "publish": "npx @vscode/vsce publish"
+  }
+}

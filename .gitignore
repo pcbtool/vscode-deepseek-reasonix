@@ -1,0 +1,15 @@
+# VS Code extension build artifact
+*.vsix
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.swp
+*.swo

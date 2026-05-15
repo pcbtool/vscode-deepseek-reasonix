@@ -1,0 +1,8 @@
+.vscode/**
+.gitignore
+.git/**
+node_modules/**
+*.vsix
+README.md
+logo.svg
+LICENSE
