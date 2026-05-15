@@ -53,7 +53,7 @@ npx reasonix code
 git clone https://github.com/pcbtool/vscode-deepseek-reasonix.git
 cd vscode-deepseek-reasonix
 npx @vscode/vsce package
-code --install-extension deepseek-reasonix-*.vsix
+code --install-extension vscode-deepseek-reasonix-*.vsix
 ```
 
 <p align="right"><a href="#readme">⬆ 返回顶部 · Back to top</a></p>
@@ -95,7 +95,7 @@ npx reasonix code
 git clone https://github.com/pcbtool/vscode-deepseek-reasonix.git
 cd vscode-deepseek-reasonix
 npx @vscode/vsce package
-code --install-extension deepseek-reasonix-*.vsix
+code --install-extension vscode-deepseek-reasonix-*.vsix
 ```
 
 ---
@@ -110,7 +110,7 @@ cd vscode-deepseek-reasonix
 # Package VSIX
 npx @vscode/vsce package
 
-# Output: deepseek-reasonix-*.vsix
+# Output: vscode-deepseek-reasonix-*.vsix
 ```
 
 No compilation required — pure JavaScript.
