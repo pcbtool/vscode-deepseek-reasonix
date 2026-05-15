@@ -1,16 +1,21 @@
 {
   "name": "deepseek-reasonix",
-  "displayName": "pcbtool.net",
+  "displayName": "DeepSeek Reasonix",
   "description": "一键启动 Reasonix 终端，无需手动输入命令。One-click launch Reasonix terminal without typing commands.",
   "version": "0.2.0",
-  "publisher": "pcbtool.net",
+  "publisher": "pcbtool-net",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pcbtool/vscode-deepseek-reasonix.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
     "Other"
   ],
+  "icon": "./logo.jpg",
   "main": "./extension.js",
   "activationEvents": [
     "onView:reasonix.sidebar"

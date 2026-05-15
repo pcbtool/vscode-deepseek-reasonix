@@ -1,5 +1,5 @@
 # VS Code extension build artifact
-*.vsix
+
 
 # Node.js
 node_modules/

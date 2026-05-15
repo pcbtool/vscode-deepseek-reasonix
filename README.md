@@ -1,63 +1,129 @@
 # 🐋 DeepSeek Reasonix
 
-一键在 VS Code 右侧终端中启动 **Reasonix**，免去手动输入的繁琐。
+<p align="center">
+  <img src="./logo.jpg" width="128" alt="DeepSeek Reasonix">
+</p>
 
-## 功能
+<div align="center">
 
-- **活动栏入口** — 左侧出现 DeepSeek 鲸鱼图标，点击展示会话面板
-- **终端贴靠** — 自动在编辑器右侧打开终端，不影响左侧代码编辑
-- **自动切换目录** — 自动 `cd` 到当前项目根目录
-- **会话管理** — 侧边栏实时显示 Reasonix 终端运行状态
+一键启动 Reasonix 终端 · One-click launch Reasonix terminal
 
-## 安装
+[![VS Code Marketplace](https://img.shields.io/badge/Marketplace-v0.2.0-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/pcbtool/vscode-deepseek-reasonix/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-pcbtool%2Fvscode--deepseek--reasonix-181717?logo=github)](https://github.com/pcbtool/vscode-deepseek-reasonix)
 
-### 从 VSIX 安装
+</div>
+
+---
+
+## 🇨🇳 中文
+
+在 VS Code 中一键启动 **Reasonix**，免去手动输入命令的繁琐。
+
+### 功能
+
+- **🐋 活动栏一键启动** — 点击左侧 DeepSeek 鲸鱼图标，自动打开终端并运行 `npx reasonix code`
+- **📂 自动 `cd` 到项目目录** — 自动切换到当前工作区根目录
+- **🪟 终端自动贴靠** — 终端窗口自动贴靠到编辑器右侧分组，不遮挡代码
+- **⌨️ 命令面板** — `Ctrl+Shift+P` → `Reasonix: 启动终端` 同样可用
+
+### 使用
+
+| 方式 | 操作 |
+|------|------|
+| 活动栏 | 点击左侧 🐋 图标，终端自动启动 |
+| 命令面板 | `Ctrl+Shift+P` → `Reasonix: 启动终端` |
+
+启动后终端自动执行：
 
 ```bash
-git clone git@github.com:pcbtool/vscode-deepseek-reasonix.git
+cd <当前项目目录>
+npx reasonix code
+```
+
+### 安装
+
+**扩展市场安装** — 在 VS Code 扩展市场中搜索 **DeepSeek Reasonix** 即可安装。
+
+**VSIX 手动安装**：
+
+```bash
+git clone https://github.com/pcbtool/vscode-deepseek-reasonix.git
 cd vscode-deepseek-reasonix
 npx @vscode/vsce package
 code --install-extension deepseek-reasonix-*.vsix
 ```
 
-### 开发模式
+---
 
-1. `git clone` 后，VS Code 打开项目目录
-2. 按 `F5` 启动 Extension Development Host
+## 🇬🇧 English
 
-## 使用
+Launch **Reasonix** in VS Code with one click — no need to type commands manually.
 
-| 方式 | 操作 |
-|------|------|
-| **活动栏** | 点击左侧 🐋 图标 → 面板显示会话状态 |
-| **命令面板** | `Ctrl+Shift+P` → `Reasonix: 启动终端` |
-| **启动后** | 终端自动在编辑器右侧打开，运行 `npx reasonix code` |
+### Features
 
-## 项目结构
+- **🐋 Activity Bar Launch** — Click the DeepSeek whale icon in the activity bar to automatically open a terminal and run `npx reasonix code`
+- **📂 Auto `cd` to Project** — Automatically switches to your current workspace root directory
+- **🪟 Smart Terminal Placement** — Terminal opens in the editor's right group, keeping your code visible
+- **⌨️ Command Palette** — `Ctrl+Shift+P` → `Reasonix: 启动终端` also works
+
+### Usage
+
+| Method | Action |
+|--------|--------|
+| Activity Bar | Click the 🐋 whale icon, terminal starts automatically |
+| Command Palette | `Ctrl+Shift+P` → `Reasonix: 启动终端` |
+
+The terminal will automatically run:
+
+```bash
+cd <your project directory>
+npx reasonix code
+```
+
+### Installation
+
+**Marketplace** — Search **DeepSeek Reasonix** in the VS Code extensions marketplace.
+
+**VSIX Manual Install**:
+
+```bash
+git clone https://github.com/pcbtool/vscode-deepseek-reasonix.git
+cd vscode-deepseek-reasonix
+npx @vscode/vsce package
+code --install-extension deepseek-reasonix-*.vsix
+```
+
+---
+
+## 🔧 Build from Source
+
+```bash
+# Clone
+git clone git@github.com:pcbtool/vscode-deepseek-reasonix.git
+cd vscode-deepseek-reasonix
+
+# Package VSIX
+npx @vscode/vsce package
+
+# Output: deepseek-reasonix-*.vsix
+```
+
+No compilation required — pure JavaScript.
+
+## 🏗 Project Structure
 
 ```
 vscode-deepseek-reasonix/
-├── .gitignore        # Git 忽略规则
-├── .vscodeignore     # 打包忽略规则
-├── LICENSE           # MIT 许可证
-├── README.md         # 本文件
-├── package.json      # 扩展清单
-├── extension.js      # 扩展主逻辑
-├── icon.svg          # 活动栏图标 (50→24)
-└── logo.svg          # 大尺寸品牌徽标 (500×500)
+├── extension.js      # Extension entry point
+├── package.json      # Extension manifest
+├── icon.svg          # Activity bar icon (50×24)
+├── logo.jpg          # Marketplace icon (128×128)
+├── logo.svg          # Vector brand logo (500×500)
+├── README.md         # This file
+└── LICENSE           # MIT
 ```
 
-## 构建
+## 📜 License
 
-纯 JavaScript，无需编译：
-
-```bash
-npm install -g @vscode/vsce
-vsce package
-```
-
-输出 `deepseek-reasonix-*.vsix` 即可分发。
-
-## 许可
-
-MIT
+MIT — see [LICENSE](https://github.com/pcbtool/vscode-deepseek-reasonix/blob/main/LICENSE).
