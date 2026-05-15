@@ -1,9 +1,9 @@
 {
   "name": "deepseek-reasonix",
-  "displayName": "Summving",
-  "description": "DeepSeek 小鲸鱼 — 一键在右侧终端中启动 Reasonix",
+  "displayName": "pcbtool.net",
+  "description": "一键启动 Reasonix 终端，无需手动输入命令。One-click launch Reasonix terminal without typing commands.",
   "version": "0.2.0",
-  "publisher": "summving",
+  "publisher": "pcbtool.net",
   "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
