@@ -1,0 +1,16 @@
+{
+  "sidebar": {
+    "lang": "en",
+    "title": "🐋 Reasonix",
+    "button": {
+      "launch": "Open DeepSeek-Reasonix"
+    },
+    "hint": {
+      "retry": "Click again after closing the terminal"
+    }
+  },
+  "log": {
+    "activated": "[Reasonix] Extension activated",
+    "moveFailed": "[Reasonix] Failed to move terminal:"
+  }
+}

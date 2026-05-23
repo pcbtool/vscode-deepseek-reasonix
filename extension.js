@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const { t } = require('./i18n');
 
 /**
  * Reasonix VS Code 扩展
@@ -8,7 +9,7 @@ const vscode = require('vscode');
  * — 终端自动在编辑器右侧贴靠
  */
 function activate(context) {
-  console.log('[Reasonix] 扩展已激活');
+  console.log(t('log.activated'));
 
   // ── 注册启动命令 ────────────────────────────────────────────
   context.subscriptions.push(
@@ -55,7 +56,7 @@ function launchReasonix() {
       .executeCommand('workbench.action.moveEditorToRightGroup')
       .then(
         () => {},
-        (err) => console.error('[Reasonix] 贴靠失败:', err)
+        (err) => console.error(t('log.moveFailed'), err)
       );
   }, 150);
 }
@@ -65,10 +66,6 @@ function launchReasonix() {
  * 根据 VS Code 语言自动切换中/英文，点击按钮可再次启动终端。
  */
 class ReasonixSidebarProvider {
-  constructor() {
-    this._isZh = vscode.env.language.startsWith('zh');
-  }
-
   resolveWebviewView(webviewView) {
     webviewView.webview.options = {
       enableScripts: true,
@@ -84,14 +81,8 @@ class ReasonixSidebarProvider {
   }
 
   _buildHtml() {
-    const lang = this._isZh ? 'zh-CN' : 'en';
-    const btnText = this._isZh ? '打开 DeepSeek-Reasonix' : 'Open DeepSeek-Reasonix';
-    const hintText = this._isZh
-      ? '关闭终端后可再次点击打开'
-      : 'Click again after closing the terminal';
-
     return `<!DOCTYPE html>
-<html lang="${lang}">
+<html lang="${t('sidebar.lang')}">
 <head>
   <meta charset="UTF-8"/>
   <style>
@@ -135,9 +126,9 @@ class ReasonixSidebarProvider {
   </style>
 </head>
 <body>
-  <div class="title">🐋 Reasonix</div>
-  <button class="launch-btn" id="launchBtn">${btnText}</button>
-  <div class="hint">${hintText}</div>
+  <div class="title">${t('sidebar.title')}</div>
+  <button class="launch-btn" id="launchBtn">${t('sidebar.button.launch')}</button>
+  <div class="hint">${t('sidebar.hint.retry')}</div>
   <script>
     (function() {
       const vscode = acquireVsCodeApi();

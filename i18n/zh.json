@@ -1,0 +1,16 @@
+{
+  "sidebar": {
+    "lang": "zh-CN",
+    "title": "🐋 Reasonix",
+    "button": {
+      "launch": "打开 DeepSeek-Reasonix"
+    },
+    "hint": {
+      "retry": "关闭终端后可再次点击打开"
+    }
+  },
+  "log": {
+    "activated": "[Reasonix] 扩展已激活",
+    "moveFailed": "[Reasonix] 贴靠失败:"
+  }
+}
