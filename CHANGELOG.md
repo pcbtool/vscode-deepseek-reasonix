@@ -6,7 +6,6 @@
 - Dashboard URL 通过 `REASONIX_DASHBOARD_TOKEN` + `--dashboard-port` 预知 / Pre-determine Dashboard URL via `REASONIX_DASHBOARD_TOKEN` + `--dashboard-port`
 - 多终端独立 URL，按钮按活跃终端切换 / Per-terminal URLs, button switches by active terminal
 - Dashboard 按钮样式统一、关闭后自动置灰 / Unified Dashboard button style, auto-disable on close
-- 移除 `child_process.spawn` 依赖 / Remove `child_process.spawn` dependency
 
 ## 1.0.0
 
