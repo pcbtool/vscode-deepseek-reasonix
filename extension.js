@@ -4,6 +4,7 @@ const vscode = require('vscode');
  * Reasonix VS Code 扩展
  * — 活动栏鲸鱼图标入口，点击直接启动终端
  * — 命令面板启动 (Ctrl+Shift+P → "Reasonix: 启动终端")
+ * — 侧边栏面板内含启动按钮，随时可再次打开
  * — 终端自动在编辑器右侧贴靠
  */
 function activate(context) {
@@ -14,37 +15,35 @@ function activate(context) {
     vscode.commands.registerCommand('reasonix.launch', launchReasonix)
   );
 
-  // ── 注册侧边栏占位视图（活动栏图标需要） ──────────────────
+  // ── 注册侧边栏面板（含启动按钮） ──────────────────────────
+  const provider = new ReasonixSidebarProvider();
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider('reasonix.sidebar', new ReasonixSidebarProvider())
+    vscode.window.registerWebviewViewProvider('reasonix.sidebar', provider, {
+      webviewOptions: { retainContextWhenHidden: true },
+    })
   );
 
-  // ── 激活后自动启动终端 ──────────────────────────────────────
+  // ── 激活后自动启动第一个终端 ────────────────────────────────
   launchReasonix();
 }
 
 /**
- * 启动 Reasonix 终端：
+ * 启动一个新的 Reasonix 终端：
  * 1. 在编辑器区域创建终端
  * 2. cd 到当前工作区目录
  * 3. 运行 npx reasonix code
  * 4. 终端贴靠到窗口右侧
+ * 每次调用都创建新终端，不复用。
  */
 function launchReasonix() {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath;
 
-  // 复用同名终端，避免堆积
-  let terminal = vscode.window.terminals.find((t) => t.name === 'Reasonix');
-  if (!terminal) {
-    terminal = vscode.window.createTerminal({
-      name: 'Reasonix',
-      location: vscode.TerminalLocation.Editor,
-    });
-  }
-
+  const terminal = vscode.window.createTerminal({
+    name: 'Reasonix',
+    location: vscode.TerminalLocation.Editor,
+  });
   terminal.show();
 
-  // 切换到当前项目目录，然后启动 reasonix
   if (folder) {
     terminal.sendText(`cd "${folder}"`);
   }
@@ -62,12 +61,27 @@ function launchReasonix() {
 }
 
 /**
- * 极简侧边栏占位（点击活动栏图标时展示）
- * 无会话状态追踪，仅显示品牌标识。
+ * 侧边栏面板
+ * 点击"打开 DeepSeek-Reasonix"按钮可再次启动终端。
  */
 class ReasonixSidebarProvider {
   resolveWebviewView(webviewView) {
-    webviewView.webview.html = `<!DOCTYPE html>
+    webviewView.webview.options = {
+      enableScripts: true,
+    };
+
+    webviewView.webview.html = this._buildHtml();
+
+    // 监听来自 webview 的消息
+    webviewView.webview.onDidReceiveMessage((message) => {
+      if (message.command === 'launch') {
+        launchReasonix();
+      }
+    });
+  }
+
+  _buildHtml() {
+    return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
@@ -80,12 +94,49 @@ class ReasonixSidebarProvider {
       margin: 0;
       text-align: center;
     }
-    .title { font-size: 15px; font-weight: 600; margin-top: 20px; }
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 20px;
+    }
+    .launch-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      background: linear-gradient(135deg, #4F46E5, #06B6D4);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .launch-btn:hover {
+      opacity: 0.85;
+    }
+    .launch-btn:active {
+      opacity: 0.7;
+    }
+    .hint {
+      font-size: 11px;
+      opacity: 0.4;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="title">🐋 Reasonix</div>
-  <p style="font-size:12px;opacity:0.5;">终端已在右侧打开</p>
+  <button class="launch-btn" id="launchBtn">打开 DeepSeek-Reasonix</button>
+  <div class="hint">关闭终端后可再次点击打开</div>
+  <script>
+    (function() {
+      const vscode = acquireVsCodeApi();
+      document.getElementById('launchBtn').addEventListener('click', function() {
+        vscode.postMessage({ command: 'launch' });
+      });
+    })();
+  </script>
 </body>
 </html>`;
   }
