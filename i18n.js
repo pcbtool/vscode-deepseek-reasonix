@@ -37,4 +37,23 @@ function t(key) {
   return value;
 }
 
-module.exports = { t };
+/**
+ * 获取翻译数据中任意路径的值（字符串 / 对象 / 数组）
+ * @param {string} key - 如 "sidebar.links"
+ * @returns {*}
+ */
+function get(key) {
+  const keys = key.split('.');
+  let value = bundle;
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = value[k];
+    } else {
+      console.warn(`[i18n] Missing key: "${key}"`);
+      return null;
+    }
+  }
+  return value;
+}
+
+module.exports = { t, get };

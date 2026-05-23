@@ -7,7 +7,17 @@
     },
     "hint": {
       "retry": "Click again after closing the terminal"
-    }
+    },
+    "links": [
+      {
+        "text": "PCB Tools Navigator",
+        "url": "https://pcbtool.net"
+      },
+      {
+        "text": "Free Online Gerber Viewer",
+        "url": "https://online-gerber-viewer.com"
+      }
+    ]
   },
   "log": {
     "activated": "[Reasonix] Extension activated",

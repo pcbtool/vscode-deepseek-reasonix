@@ -1,5 +1,5 @@
 const vscode = require('vscode');
-const { t } = require('./i18n');
+const { t, get } = require('./i18n');
 
 /**
  * Reasonix VS Code 扩展
@@ -62,6 +62,20 @@ function launchReasonix() {
 }
 
 /**
+ * 生成侧边栏底部的链接列表 HTML
+ */
+function renderLinks() {
+  const links = get('sidebar.links');
+  if (!links || !Array.isArray(links)) return '';
+  return links
+    .map(
+      (link) =>
+        `<span class="link-item" data-url="${link.url}">${link.text}: ${link.url}</span>`
+    )
+    .join('\n    ');
+}
+
+/**
  * 侧边栏面板
  * 根据 VS Code 语言自动切换中/英文，点击按钮可再次启动终端。
  */
@@ -76,6 +90,8 @@ class ReasonixSidebarProvider {
     webviewView.webview.onDidReceiveMessage((message) => {
       if (message.command === 'launch') {
         launchReasonix();
+      } else if (message.command === 'openUrl') {
+        vscode.env.openExternal(vscode.Uri.parse(message.url));
       }
     });
   }
@@ -123,17 +139,44 @@ class ReasonixSidebarProvider {
       opacity: 0.4;
       margin-top: 10px;
     }
+    .links {
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .links .link-item {
+      display: block;
+      font-size: 11px;
+      color: var(--vscode-textLink-foreground, #3794ff);
+      text-decoration: none;
+      cursor: pointer;
+      margin-bottom: 6px;
+      line-height: 1.5;
+      transition: opacity 0.15s;
+    }
+    .links .link-item:hover {
+      opacity: 0.75;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="title">${t('sidebar.title')}</div>
   <button class="launch-btn" id="launchBtn">${t('sidebar.button.launch')}</button>
   <div class="hint">${t('sidebar.hint.retry')}</div>
+  <div class="links">
+    ${renderLinks()}
+  </div>
   <script>
     (function() {
       const vscode = acquireVsCodeApi();
       document.getElementById('launchBtn').addEventListener('click', function() {
         vscode.postMessage({ command: 'launch' });
+      });
+      document.querySelectorAll('.link-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+          vscode.postMessage({ command: 'openUrl', url: this.dataset.url });
+        });
       });
     })();
   </script>

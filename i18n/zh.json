@@ -7,7 +7,17 @@
     },
     "hint": {
       "retry": "关闭终端后可再次点击打开"
-    }
+    },
+    "links": [
+      {
+        "text": "PCB Tools Navigator",
+        "url": "https://pcbtool.net"
+      },
+      {
+        "text": "Free Online Gerber Viewer",
+        "url": "https://online-gerber-viewer.com"
+      }
+    ]
   },
   "log": {
     "activated": "[Reasonix] 扩展已激活",
