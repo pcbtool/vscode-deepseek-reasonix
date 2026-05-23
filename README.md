@@ -14,6 +14,11 @@
 
 **🌐 语言切换 · Language:** <a href="#chinese">🇨🇳 中文</a> &nbsp;|&nbsp; <a href="#english">🇬🇧 English</a>
 
+**作者其他工具 · Author's other tools:**
+
+- **PCB Tools Navigator** — [https://pcbtool.net](https://pcbtool.net)
+- **Free Online Gerber Viewer** — [https://online-gerber-viewer.com](https://online-gerber-viewer.com)
+
 </div>
 
 ---
@@ -97,19 +102,6 @@ cd vscode-deepseek-reasonix
 npx @vscode/vsce package
 code --install-extension vscode-deepseek-reasonix-*.vsix
 ```
-
----
-
-## 🔗 Related Tools · 相关工具
-
-<div align="center">
-
-| | |
-|---|---|
-| **PCB Tools Navigator** | [https://pcbtool.net](https://pcbtool.net) |
-| **Free Online Gerber Viewer** | [https://online-gerber-viewer.com](https://online-gerber-viewer.com) |
-
-</div>
 
 ---
 
