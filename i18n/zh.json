@@ -3,7 +3,8 @@
     "lang": "zh-CN",
     "title": "🐋 Reasonix",
     "button": {
-      "launch": "打开 DeepSeek-Reasonix"
+      "launch": "打开 DeepSeek-Reasonix",
+      "dashboard": "打开 Dashboard"
     },
     "hint": {
       "retry": "关闭终端后可再次点击打开"

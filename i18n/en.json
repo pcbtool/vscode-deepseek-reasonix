@@ -3,7 +3,8 @@
     "lang": "en",
     "title": "🐋 Reasonix",
     "button": {
-      "launch": "Open DeepSeek-Reasonix"
+      "launch": "Open DeepSeek-Reasonix",
+      "dashboard": "Open Dashboard"
     },
     "hint": {
       "retry": "Click again after closing the terminal"
