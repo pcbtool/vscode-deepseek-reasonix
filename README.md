@@ -8,7 +8,7 @@
 
 一键启动 Reasonix 终端 · One-click launch Reasonix terminal
 
-[![VS Code Marketplace](https://img.shields.io/badge/Marketplace-v0.2.0-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/)
+[![VS Code Marketplace](https://img.shields.io/badge/Marketplace-v1.2.0-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/pcbtool/vscode-deepseek-reasonix/blob/main/LICENSE)
 [![GitHub](https://img.shields.io/badge/GitHub-pcbtool%2Fvscode--deepseek--reasonix-181717?logo=github)](https://github.com/pcbtool/vscode-deepseek-reasonix)
 
@@ -16,8 +16,9 @@
 
 **作者其他工具 · Author's other tools:**
 
-- **PCB Tools Navigator** — [https://pcbtool.net](https://pcbtool.net)
-- **Free Online Gerber Viewer** — [https://online-gerber-viewer.com](https://online-gerber-viewer.com)
+**PCB Tools Navigator** — [https://pcbtool.net](https://pcbtool.net)
+
+**Free Online Gerber Viewer** — [https://online-gerber-viewer.com](https://online-gerber-viewer.com)
 
 </div>
 

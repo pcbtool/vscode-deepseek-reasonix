@@ -1,10 +1,33 @@
 const vscode = require('vscode');
-const { spawn } = require('child_process');
+const net = require('net');
+const crypto = require('crypto');
 const { t, get } = require('./i18n');
 
 // ── 全局状态 ───────────────────────────────────────────────────
 let lastDashboardUrl = null;
+const terminalUrls = new Map();     // Terminal → URL 映射
 let latestWebview = null;           // 用于推送 URL 到 webview
+
+/**
+ * 找到一个可用的本地端口
+ */
+function findFreePort() {
+  return new Promise((resolve, reject) => {
+    const srv = net.createServer();
+    srv.listen(0, '127.0.0.1', () => {
+      const port = srv.address().port;
+      srv.close(() => resolve(port));
+    });
+    srv.on('error', reject);
+  });
+}
+
+/**
+ * 生成一个安全的 dashboard token（32 位 hex）
+ */
+function generateToken() {
+  return crypto.randomBytes(16).toString('hex');
+}
 
 /**
  * Reasonix VS Code 扩展
@@ -27,79 +50,82 @@ function activate(context) {
     })
   );
 
+  // 终端关闭时清理
+  context.subscriptions.push(
+    vscode.window.onDidCloseTerminal((t) => {
+      if (terminalUrls.has(t)) terminalUrls.delete(t);
+    })
+  );
+
   launchReasonix();
 }
 
 /**
- * 用伪终端 (Pseudoterminal) 启动 npx reasonix code，
- * 捕获 stdout 中的 Dashboard URL。
+ * 启动 Reasonix 终端。
+ * 使用预知的端口和 token，URL 在启动前就已确定。
  */
-function launchReasonix() {
+async function launchReasonix() {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath;
   const isWin = process.platform === 'win32';
-  const npxCmd = isWin ? 'npx.cmd' : 'npx';
 
-  let proc = null;
-  const writeEmitter = new vscode.EventEmitter();
+  // 在终端启动前就确定端口和 token
+  const token = generateToken();
+  let port;
+  try {
+    port = await findFreePort();
+  } catch {
+    port = 18080;
+  }
+  const dashboardUrl = `http://127.0.0.1:${port}/?token=${token}`;
+  lastDashboardUrl = dashboardUrl;
 
+  // 创建终端，注入 REASONIX_DASHBOARD_TOKEN 环境变量
   const terminal = vscode.window.createTerminal({
     name: 'Reasonix',
-    pty: {
-      onDidWrite: writeEmitter.event,
-      open: () => {
-        proc = spawn(npxCmd, ['reasonix', 'code'], {
-          cwd: folder || undefined,
-          env: { ...process.env },
-        });
-
-        const handleData = (data) => {
-          const text = data.toString();
-          writeEmitter.fire(text);
-
-          // 解析 Dashboard URL: http://127.0.0.1:<port>/?token=<hash>
-          const match = text.match(
-            /https?:\/\/127\.0\.0\.1:\d+\/\?token=[a-f0-9]+/
-          );
-          if (match) {
-            lastDashboardUrl = match[0];
-            console.log('[Reasonix] Dashboard URL:', lastDashboardUrl);
-            // 通知 webview 更新按钮状态
-            if (latestWebview) {
-              latestWebview.webview.postMessage({
-                command: 'dashboardUrl',
-                url: lastDashboardUrl,
-              });
-            }
-          }
-        };
-
-        proc.stdout.on('data', handleData);
-        proc.stderr.on('data', handleData);
-        proc.on('error', (err) => {
-          writeEmitter.fire(`\r\n[Error] ${err.message}\r\n`);
-        });
-        proc.on('exit', (code) => {
-          writeEmitter.fire(`\r\n[Process exited with code ${code}]\r\n`);
-          proc = null;
-        });
-      },
-      close: () => {
-        if (proc) {
-          proc.kill();
-          proc = null;
-        }
-      },
-    },
     location: vscode.TerminalLocation.Editor,
+    env: {
+      REASONIX_DASHBOARD_TOKEN: token,
+    },
   });
+  terminalUrls.set(terminal, dashboardUrl);
+
+  // 立即通知 webview（无需等终端输出）
+  if (latestWebview) {
+    try {
+      latestWebview.webview.postMessage({
+        command: 'dashboardUrl',
+        url: dashboardUrl,
+      });
+    } catch (_) {}
+  }
+  console.log('[Reasonix] Dashboard URL (pre-known):', dashboardUrl);
 
   terminal.show();
 
+  if (folder) {
+    terminal.sendText(`cd "${folder}"`);
+  }
+  terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
+
+  // 将终端贴靠到右侧分组
   setTimeout(() => {
     vscode.commands
       .executeCommand('workbench.action.moveEditorToRightGroup')
       .then(() => {}, (err) => console.error(t('log.moveFailed'), err));
   }, 150);
+}
+
+/**
+ * 获取当前应该打开的 Dashboard URL：
+ * 优先使用当前活跃的 Reasonix 终端的 URL，
+ * 若无活跃终端则使用最近捕获到的 URL。
+ */
+function getDashboardUrl() {
+  const active = vscode.window.activeTerminal;
+  if (active && terminalUrls.has(active)) {
+    return terminalUrls.get(active);
+  }
+  return lastDashboardUrl;
 }
 
 // ── 侧边栏链接渲染 ────────────────────────────────────────────
@@ -110,7 +136,7 @@ function renderLinks() {
   return links
     .map(
       (link) =>
-        `<span class="link-item" data-url="${link.url}">${link.text}: ${link.url}</span>`
+        `<span class="link-item" data-url="${link.url}">${link.text}</span>`
     )
     .join('\n    ');
 }
@@ -124,7 +150,6 @@ class ReasonixSidebarProvider {
     webviewView.webview.options = { enableScripts: true };
     webviewView.webview.html = this._buildHtml();
 
-    // 推送当前已知的 URL（可能为 null）
     webviewView.webview.postMessage({
       command: 'dashboardUrl',
       url: lastDashboardUrl,
@@ -138,11 +163,13 @@ class ReasonixSidebarProvider {
         case 'openUrl':
           vscode.env.openExternal(vscode.Uri.parse(message.url));
           break;
-        case 'openDashboard':
-          if (lastDashboardUrl) {
-            vscode.env.openExternal(vscode.Uri.parse(lastDashboardUrl));
+        case 'openDashboard': {
+          const url = getDashboardUrl();
+          if (url) {
+            vscode.env.openExternal(vscode.Uri.parse(url));
           }
           break;
+        }
       }
     });
 
@@ -187,14 +214,7 @@ class ReasonixSidebarProvider {
     }
     .btn:hover { opacity: 0.85; }
     .btn:active { opacity: 0.7; }
-    .btn.secondary {
-      background: rgba(255,255,255,0.06);
-      color: var(--vscode-sideBar-foreground, #ccc);
-      border: 1px solid rgba(255,255,255,0.1);
-      opacity: 0.7;
-    }
-    .btn.secondary:hover { opacity: 1; }
-    .btn.secondary:disabled {
+    .btn:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
@@ -222,26 +242,35 @@ class ReasonixSidebarProvider {
       opacity: 0.75;
       text-decoration: underline;
     }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.6;
+      margin-bottom: 8px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
   <div class="title">${t('sidebar.title')}</div>
 
   <button class="btn" id="launchBtn">${t('sidebar.button.launch')}</button>
-  <button class="btn secondary" id="dashboardBtn" disabled>
+  <button class="btn" id="dashboardBtn" disabled>
     ${t('sidebar.button.dashboard')}
   </button>
 
   <div class="hint">${t('sidebar.hint.retry')}</div>
 
-  <div class="links">${renderLinks()}</div>
+  <div class="links">
+    <div class="section-title">${t('sidebar.authorToolsTitle')}</div>
+    ${renderLinks()}
+  </div>
 
   <script>
     (function() {
       const vscode = acquireVsCodeApi();
       const dashboardBtn = document.getElementById('dashboardBtn');
 
-      // 从扩展宿主接收消息
       window.addEventListener('message', function(event) {
         const msg = event.data;
         if (msg.command === 'dashboardUrl') {

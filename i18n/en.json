@@ -9,6 +9,7 @@
     "hint": {
       "retry": "Click again after closing the terminal"
     },
+    "authorToolsTitle": "Author's Other Tools",
     "links": [
       {
         "text": "PCB Tools Navigator",
