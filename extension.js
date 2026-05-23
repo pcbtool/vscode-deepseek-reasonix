@@ -53,7 +53,21 @@ function activate(context) {
   // 终端关闭时清理
   context.subscriptions.push(
     vscode.window.onDidCloseTerminal((t) => {
-      if (terminalUrls.has(t)) terminalUrls.delete(t);
+      if (terminalUrls.has(t)) {
+        terminalUrls.delete(t);
+        // 没有 Reasonix 终端存活时，清理 URL 并置灰按钮
+        if (terminalUrls.size === 0) {
+          lastDashboardUrl = null;
+          if (latestWebview) {
+            try {
+              latestWebview.webview.postMessage({
+                command: 'dashboardUrl',
+                url: null,
+              });
+            } catch (_) {}
+          }
+        }
+      }
     })
   );
 
