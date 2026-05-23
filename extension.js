@@ -62,9 +62,13 @@ function launchReasonix() {
 
 /**
  * 侧边栏面板
- * 点击"打开 DeepSeek-Reasonix"按钮可再次启动终端。
+ * 根据 VS Code 语言自动切换中/英文，点击按钮可再次启动终端。
  */
 class ReasonixSidebarProvider {
+  constructor() {
+    this._isZh = vscode.env.language.startsWith('zh');
+  }
+
   resolveWebviewView(webviewView) {
     webviewView.webview.options = {
       enableScripts: true,
@@ -72,7 +76,6 @@ class ReasonixSidebarProvider {
 
     webviewView.webview.html = this._buildHtml();
 
-    // 监听来自 webview 的消息
     webviewView.webview.onDidReceiveMessage((message) => {
       if (message.command === 'launch') {
         launchReasonix();
@@ -81,8 +84,14 @@ class ReasonixSidebarProvider {
   }
 
   _buildHtml() {
+    const lang = this._isZh ? 'zh-CN' : 'en';
+    const btnText = this._isZh ? '打开 DeepSeek-Reasonix' : 'Open DeepSeek-Reasonix';
+    const hintText = this._isZh
+      ? '关闭终端后可再次点击打开'
+      : 'Click again after closing the terminal';
+
     return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8"/>
   <style>
@@ -127,8 +136,8 @@ class ReasonixSidebarProvider {
 </head>
 <body>
   <div class="title">🐋 Reasonix</div>
-  <button class="launch-btn" id="launchBtn">打开 DeepSeek-Reasonix</button>
-  <div class="hint">关闭终端后可再次点击打开</div>
+  <button class="launch-btn" id="launchBtn">${btnText}</button>
+  <div class="hint">${hintText}</div>
   <script>
     (function() {
       const vscode = acquireVsCodeApi();
