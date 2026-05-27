@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+- 终端工作目录通过 `cwd` 参数设置，无需 `cd` / Set terminal working directory via `cwd` option, no `cd` needed
+
 ## 1.2.0
 
 - 新增"打开 Dashboard"按钮 / Add "Open Dashboard" button

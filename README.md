@@ -8,7 +8,7 @@
 
 一键启动 Reasonix 终端 · One-click launch Reasonix terminal
 
-[![VS Code Marketplace](https://img.shields.io/badge/Marketplace-v1.2.0-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/)
+[![VS Code Marketplace](https://img.shields.io/badge/Marketplace-v1.3.0-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/pcbtool/vscode-deepseek-reasonix/blob/main/LICENSE)
 [![GitHub](https://img.shields.io/badge/GitHub-pcbtool%2Fvscode--deepseek--reasonix-181717?logo=github)](https://github.com/pcbtool/vscode-deepseek-reasonix)
 
