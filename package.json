@@ -47,7 +47,7 @@
     ]
   },
   "scripts": {
-    "package": "npx @vscode/vsce package",
+    "package": "npx @vscode/vsce package -o build/",
     "publish": "npx @vscode/vsce publish"
   }
 }
