@@ -80,7 +80,6 @@ function activate(context) {
  */
 async function launchReasonix() {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath;
-  const isWin = process.platform === 'win32';
 
   // 在终端启动前就确定端口和 token
   const token = generateToken();
@@ -97,6 +96,7 @@ async function launchReasonix() {
   const terminal = vscode.window.createTerminal({
     name: 'Reasonix',
     location: vscode.TerminalLocation.Editor,
+    cwd: folder || undefined,
     env: {
       REASONIX_DASHBOARD_TOKEN: token,
     },
@@ -116,9 +116,6 @@ async function launchReasonix() {
 
   terminal.show();
 
-  if (folder) {
-    terminal.sendText(`cd "${folder}"`);
-  }
   terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
 
   // 将终端贴靠到右侧分组
