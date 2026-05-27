@@ -31,8 +31,8 @@
 ### 功能
 
 - **🐋 活动栏一键启动** — 点击左侧 DeepSeek 鲸鱼图标，自动打开终端并运行 `npx reasonix code`
-- **📂 自动 `cd` 到项目目录** — 自动切换到当前工作区根目录
 - **🪟 终端自动贴靠** — 终端窗口自动贴靠到编辑器右侧分组，不遮挡代码
+- **📊 一键打开 Dashboard** — 侧边栏"打开 Dashboard"按钮，自动识别当前终端 URL，支持多终端切换
 - **⌨️ 命令面板** — `Ctrl+Shift+P` → `Reasonix: 启动终端` 同样可用
 
 ### 使用
@@ -45,9 +45,10 @@
 启动后终端自动执行：
 
 ```bash
-cd <当前项目目录>
-npx reasonix code
+npx reasonix code --dashboard-port <port>
 ```
+
+终端工作目录自动设置为当前项目目录，Dashboard URL 由扩展自动管理。
 
 ### 安装
 
@@ -58,8 +59,8 @@ npx reasonix code
 ```bash
 git clone https://github.com/pcbtool/vscode-deepseek-reasonix.git
 cd vscode-deepseek-reasonix
-npx @vscode/vsce package
-code --install-extension vscode-deepseek-reasonix-*.vsix
+npm run package
+code --install-extension build/vscode-deepseek-reasonix-*.vsix
 ```
 
 <p align="right"><a href="#readme">⬆ 返回顶部 · Back to top</a></p>
@@ -73,8 +74,8 @@ Launch **Reasonix** in VS Code with one click — no need to type commands manua
 ### Features
 
 - **🐋 Activity Bar Launch** — Click the DeepSeek whale icon in the activity bar to automatically open a terminal and run `npx reasonix code`
-- **📂 Auto `cd` to Project** — Automatically switches to your current workspace root directory
 - **🪟 Smart Terminal Placement** — Terminal opens in the editor's right group, keeping your code visible
+- **📊 Open Dashboard** — "Open Dashboard" button in sidebar, auto-detects current terminal URL, supports multi-terminal switching
 - **⌨️ Command Palette** — `Ctrl+Shift+P` → `Reasonix: 启动终端` also works
 
 ### Usage
@@ -87,9 +88,10 @@ Launch **Reasonix** in VS Code with one click — no need to type commands manua
 The terminal will automatically run:
 
 ```bash
-cd <your project directory>
-npx reasonix code
+npx reasonix code --dashboard-port <port>
 ```
+
+The terminal working directory is set to your project root. Dashboard URL is managed automatically by the extension.
 
 ### Installation
 
@@ -100,8 +102,8 @@ npx reasonix code
 ```bash
 git clone https://github.com/pcbtool/vscode-deepseek-reasonix.git
 cd vscode-deepseek-reasonix
-npx @vscode/vsce package
-code --install-extension vscode-deepseek-reasonix-*.vsix
+npm run package
+code --install-extension build/vscode-deepseek-reasonix-*.vsix
 ```
 
 ---
@@ -114,22 +116,25 @@ git clone git@github.com:pcbtool/vscode-deepseek-reasonix.git
 cd vscode-deepseek-reasonix
 
 # Package VSIX
-npx @vscode/vsce package
+npm run package
 
-# Output: vscode-deepseek-reasonix-*.vsix
+# Output: build/vscode-deepseek-reasonix-*.vsix
 ```
 
-No compilation required — pure JavaScript.
+Build artifacts are output to `build/` and tracked in git. No compilation required — pure JavaScript.
 
 ## 🏗 Project Structure
 
 ```
 vscode-deepseek-reasonix/
+├── build/            # VSIX build artifacts
+├── i18n/             # Translation files (en/zh)
 ├── extension.js      # Extension entry point
+├── CHANGELOG.md      # Changelog
+├── i18n.js           # Translation loader
 ├── package.json      # Extension manifest
 ├── icon.svg          # Activity bar icon (50×24)
 ├── logo.jpg          # Marketplace icon (128×128)
-├── logo.svg          # Vector brand logo (500×500)
 ├── README.md         # This file
 └── LICENSE           # MIT
 ```
