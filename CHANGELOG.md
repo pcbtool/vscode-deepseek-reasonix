@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0
+
+- 支持 Reasonix v2 (Go)：新增 `reasonix.mode` 配置（auto/code/chat） / Support Reasonix v2 (Go): add `reasonix.mode` config (auto/code/chat)
+- 侧边栏增加启动模式下拉框，即时切换 / Add mode selector dropdown in sidebar
+- `chat` 模式使用 `npx reasonix@latest chat`，`code` 模式保留 Dashboard / `chat` mode uses `npx reasonix@latest chat`, `code` mode keeps Dashboard
+- 启动按钮文字跟随当前模式 / Launch button text follows current mode
+- 切换非 code 模式时自动置灰 Dashboard 按钮 / Auto-disable Dashboard button when switching to non-code mode
+
 ## 1.3.0
 
 - 终端工作目录通过 `cwd` 参数设置，无需 `cd` / Set terminal working directory via `cwd` option, no `cd` needed
