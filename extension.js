@@ -198,12 +198,14 @@ class ReasonixSidebarProvider {
           }
           break;
         }
-        case 'setMode':
+        case 'setMode': {
+          const newMode = message.mode;
           vscode.workspace
             .getConfiguration('reasonix')
-            .update('mode', message.mode, vscode.ConfigurationTarget.Global);
+            .update('mode', newMode, vscode.ConfigurationTarget.Global);
+          if (!latestWebview) break;
           // 非 code 模式时自动置灰 Dashboard 按钮
-          if (message.mode !== 'code' && latestWebview) {
+          if (newMode !== 'code') {
             try {
               latestWebview.webview.postMessage({
                 command: 'dashboardUrl',
@@ -211,7 +213,18 @@ class ReasonixSidebarProvider {
               });
             } catch (_) {}
           }
+          // 更新启动按钮文字
+          const labelKey = newMode === 'chat' ? 'launchChat'
+            : newMode === 'code' ? 'launchCode'
+            : 'launch';
+          try {
+            latestWebview.webview.postMessage({
+              command: 'updateLaunchLabel',
+              label: t(`sidebar.button.${labelKey}`),
+            });
+          } catch (_) {}
           break;
+        }
       }
     });
 
@@ -343,6 +356,7 @@ class ReasonixSidebarProvider {
     (function() {
       const vscode = acquireVsCodeApi();
       const dashboardBtn = document.getElementById('dashboardBtn');
+      const launchBtn = document.getElementById('launchBtn');
       const modeSelect = document.getElementById('modeSelect');
 
       window.addEventListener('message', function(event) {
@@ -355,6 +369,8 @@ class ReasonixSidebarProvider {
             dashboardBtn.disabled = true;
             delete dashboardBtn.dataset.url;
           }
+        } else if (msg.command === 'updateLaunchLabel') {
+          launchBtn.textContent = msg.label;
         } else if (msg.command === 'initMode' || msg.command === 'setMode') {
           if (msg.mode) {
             modeSelect.value = msg.mode;
