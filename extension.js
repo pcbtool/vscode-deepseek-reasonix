@@ -80,43 +80,46 @@ function activate(context) {
  */
 async function launchReasonix() {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath;
+  const mode = vscode.workspace
+    .getConfiguration('reasonix')
+    .get('mode', 'code');
 
-  // 在终端启动前就确定端口和 token
-  const token = generateToken();
-  let port;
-  try {
-    port = await findFreePort();
-  } catch {
-    port = 18080;
-  }
-  const dashboardUrl = `http://127.0.0.1:${port}/?token=${token}`;
-  lastDashboardUrl = dashboardUrl;
-
-  // 创建终端，注入 REASONIX_DASHBOARD_TOKEN 环境变量
+  const isChat = mode === 'chat';
   const terminal = vscode.window.createTerminal({
     name: 'Reasonix',
     location: vscode.TerminalLocation.Editor,
     cwd: folder || undefined,
-    env: {
-      REASONIX_DASHBOARD_TOKEN: token,
-    },
+    env: isChat ? undefined : { REASONIX_DASHBOARD_TOKEN: generateToken() },
   });
-  terminalUrls.set(terminal, dashboardUrl);
-
-  // 立即通知 webview（无需等终端输出）
-  if (latestWebview) {
-    try {
-      latestWebview.webview.postMessage({
-        command: 'dashboardUrl',
-        url: dashboardUrl,
-      });
-    } catch (_) {}
-  }
-  console.log('[Reasonix] Dashboard URL (pre-known):', dashboardUrl);
 
   terminal.show();
 
-  terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
+  if (isChat) {
+    // v2 (Go): no dashboard, uses `reasonix chat`
+    terminal.sendText('npx reasonix chat');
+  } else {
+    // v0.x (TS): dashboard supported, uses `reasonix code --dashboard-port`
+    const token = generateToken();
+    let port;
+    try {
+      port = await findFreePort();
+    } catch {
+      port = 18080;
+    }
+    const dashboardUrl = `http://127.0.0.1:${port}/?token=${token}`;
+    lastDashboardUrl = dashboardUrl;
+    terminalUrls.set(terminal, dashboardUrl);
+    if (latestWebview) {
+      try {
+        latestWebview.webview.postMessage({
+          command: 'dashboardUrl',
+          url: dashboardUrl,
+        });
+      } catch (_) {}
+    }
+    console.log('[Reasonix] Dashboard URL (pre-known):', dashboardUrl);
+    terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
+  }
 
   // 将终端贴靠到右侧分组
   setTimeout(() => {

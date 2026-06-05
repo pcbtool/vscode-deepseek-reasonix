@@ -44,7 +44,25 @@
         "command": "reasonix.launch",
         "title": "Reasonix: 启动终端"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Reasonix",
+      "properties": {
+        "reasonix.mode": {
+          "type": "string",
+          "default": "code",
+          "enum": [
+            "code",
+            "chat"
+          ],
+          "enumDescriptions": [
+            "npx reasonix code (v0.x 旧版 TypeScript，支持 Dashboard)",
+            "npx reasonix chat (v1.x 新版 Go，无 Dashboard)"
+          ],
+          "description": "Reasonix 启动模式 / Reasonix launch mode"
+        }
+      }
+    }
   },
   "scripts": {
     "package": "npx @vscode/vsce package -o build/",
