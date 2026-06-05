@@ -1,5 +1,4 @@
 const vscode = require('vscode');
-const { exec } = require('child_process');
 const net = require('net');
 const crypto = require('crypto');
 const { t, get } = require('./i18n');
@@ -8,18 +7,6 @@ const { t, get } = require('./i18n');
 let lastDashboardUrl = null;
 const terminalUrls = new Map();     // Terminal → URL 映射
 let latestWebview = null;           // 用于推送 URL 到 webview
-let reasonixVersion = null;         // 'code' (v0.x TS) 或 'chat' (v1.x Go)
-
-// 模块加载时立即检测 Reasonix 版本（无需等 activate）
-(() => {
-  exec('npx --yes reasonix --version 2>&1', { timeout: 8000 }, (err, stdout) => {
-    if (err) { reasonixVersion = 'code'; return; }
-    reasonixVersion = stdout.trim().startsWith('1.') ? 'chat' : 'code';
-    console.log('[Reasonix] Detected version:', reasonixVersion);
-  });
-  // 8 秒超时，超时后默认为 code 模式
-  setTimeout(() => { if (!reasonixVersion) reasonixVersion = 'code'; }, 8000);
-})();
 
 /**
  * 找到一个可用的本地端口
@@ -94,25 +81,25 @@ function activate(context) {
 async function launchReasonix() {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath;
 
-  // 优先使用用户手动设置，未设置时走自动检测
-  const userMode = vscode.workspace
+  const mode = vscode.workspace
     .getConfiguration('reasonix')
     .get('mode', 'auto');
-  const isChat = userMode === 'chat' || (userMode === 'auto' && reasonixVersion === 'chat');
+  const isChat = mode === 'chat';
+  const useDashboard = mode === 'code';
   const terminal = vscode.window.createTerminal({
     name: 'Reasonix',
     location: vscode.TerminalLocation.Editor,
     cwd: folder || undefined,
-    env: isChat ? undefined : { REASONIX_DASHBOARD_TOKEN: generateToken() },
+    env: useDashboard ? { REASONIX_DASHBOARD_TOKEN: generateToken() } : undefined,
   });
 
   terminal.show();
 
   if (isChat) {
-    // v2 (Go): no dashboard, uses `reasonix chat`
+    // v2 (Go)
     terminal.sendText('npx reasonix chat');
-  } else {
-    // v0.x (TS): dashboard supported, uses `reasonix code --dashboard-port`
+  } else if (useDashboard) {
+    // v0.x (TS)，指定 code + dashboard
     const token = generateToken();
     let port;
     try {
@@ -133,6 +120,9 @@ async function launchReasonix() {
     }
     console.log('[Reasonix] Dashboard URL (pre-known):', dashboardUrl);
     terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
+  } else {
+    // auto：不传 --dashboard-port，兼容所有版本
+    terminal.sendText('npx reasonix code');
   }
 
   // 将终端贴靠到右侧分组
