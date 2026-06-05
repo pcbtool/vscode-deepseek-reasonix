@@ -202,6 +202,15 @@ class ReasonixSidebarProvider {
           vscode.workspace
             .getConfiguration('reasonix')
             .update('mode', message.mode, vscode.ConfigurationTarget.Global);
+          // 非 code 模式时自动置灰 Dashboard 按钮
+          if (message.mode !== 'code' && latestWebview) {
+            try {
+              latestWebview.webview.postMessage({
+                command: 'dashboardUrl',
+                url: null,
+              });
+            } catch (_) {}
+          }
           break;
       }
     });
