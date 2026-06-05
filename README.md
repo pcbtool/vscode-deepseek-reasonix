@@ -33,6 +33,7 @@
 - **🐋 活动栏一键启动** — 点击左侧 DeepSeek 鲸鱼图标，自动打开终端并运行 `npx reasonix code`
 - **🪟 终端自动贴靠** — 终端窗口自动贴靠到编辑器右侧分组，不遮挡代码
 - **📊 一键打开 Dashboard** — 侧边栏"打开 Dashboard"按钮，自动识别当前终端 URL，支持多终端切换
+- **🔄 支持 Reasonix v1/v2** — 通过设置 `reasonix.mode` 在 `code` (v0.x TypeScript) 和 `chat` (v1.x Go) 模式间切换
 - **⌨️ 命令面板** — `Ctrl+Shift+P` → `Reasonix: 启动终端` 同样可用
 
 ### 使用
@@ -44,11 +45,10 @@
 
 启动后终端自动执行：
 
-```bash
-npx reasonix code --dashboard-port <port>
-```
+- **code 模式** (v0.x TS): `npx reasonix code --dashboard-port <port>`，附带 Dashboard 支持
+- **chat 模式** (v1.x Go): `npx reasonix chat`，无 Dashboard
 
-终端工作目录自动设置为当前项目目录，Dashboard URL 由扩展自动管理。
+可通过 VS Code 设置 `reasonix.mode` 切换。终端工作目录自动设置为当前项目目录。
 
 ### 安装
 
@@ -76,6 +76,7 @@ Launch **Reasonix** in VS Code with one click — no need to type commands manua
 - **🐋 Activity Bar Launch** — Click the DeepSeek whale icon in the activity bar to automatically open a terminal and run `npx reasonix code`
 - **🪟 Smart Terminal Placement** — Terminal opens in the editor's right group, keeping your code visible
 - **📊 Open Dashboard** — "Open Dashboard" button in sidebar, auto-detects current terminal URL, supports multi-terminal switching
+- **🔄 Reasonix v1/v2 Support** — Switch between `code` (v0.x TypeScript) and `chat` (v1.x Go) via `reasonix.mode` setting
 - **⌨️ Command Palette** — `Ctrl+Shift+P` → `Reasonix: 启动终端` also works
 
 ### Usage
@@ -87,11 +88,10 @@ Launch **Reasonix** in VS Code with one click — no need to type commands manua
 
 The terminal will automatically run:
 
-```bash
-npx reasonix code --dashboard-port <port>
-```
+- **code mode** (v0.x TS): `npx reasonix code --dashboard-port <port>` with Dashboard support
+- **chat mode** (v1.x Go): `npx reasonix chat`, no Dashboard
 
-The terminal working directory is set to your project root. Dashboard URL is managed automatically by the extension.
+Switch via VS Code setting `reasonix.mode`. The terminal working directory is set to your project root.
 
 ### Installation
 
