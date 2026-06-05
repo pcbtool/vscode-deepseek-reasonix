@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const { exec } = require('child_process');
 const net = require('net');
 const crypto = require('crypto');
 const { t, get } = require('./i18n');
@@ -7,6 +8,18 @@ const { t, get } = require('./i18n');
 let lastDashboardUrl = null;
 const terminalUrls = new Map();     // Terminal → URL 映射
 let latestWebview = null;           // 用于推送 URL 到 webview
+let reasonixVersion = null;         // 'code' (v0.x TS) 或 'chat' (v1.x Go)
+
+// 模块加载时立即检测 Reasonix 版本（无需等 activate）
+(() => {
+  exec('npx --yes reasonix --version 2>&1', { timeout: 8000 }, (err, stdout) => {
+    if (err) { reasonixVersion = 'code'; return; }
+    reasonixVersion = stdout.trim().startsWith('1.') ? 'chat' : 'code';
+    console.log('[Reasonix] Detected version:', reasonixVersion);
+  });
+  // 8 秒超时，超时后默认为 code 模式
+  setTimeout(() => { if (!reasonixVersion) reasonixVersion = 'code'; }, 8000);
+})();
 
 /**
  * 找到一个可用的本地端口
@@ -80,11 +93,12 @@ function activate(context) {
  */
 async function launchReasonix() {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath;
-  const mode = vscode.workspace
-    .getConfiguration('reasonix')
-    .get('mode', 'code');
 
-  const isChat = mode === 'chat';
+  // 优先使用用户手动设置，未设置时走自动检测
+  const userMode = vscode.workspace
+    .getConfiguration('reasonix')
+    .get('mode', 'auto');
+  const isChat = userMode === 'chat' || (userMode === 'auto' && reasonixVersion === 'chat');
   const terminal = vscode.window.createTerminal({
     name: 'Reasonix',
     location: vscode.TerminalLocation.Editor,

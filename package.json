@@ -50,14 +50,16 @@
       "properties": {
         "reasonix.mode": {
           "type": "string",
-          "default": "code",
+          "default": "auto",
           "enum": [
+            "auto",
             "code",
             "chat"
           ],
           "enumDescriptions": [
-            "npx reasonix code (v0.x 旧版 TypeScript，支持 Dashboard)",
-            "npx reasonix chat (v1.x 新版 Go，无 Dashboard)"
+            "自动检测 (v0.x TS → code, v1.x Go → chat)",
+            "强制 npx reasonix code (v0.x 旧版 TypeScript，支持 Dashboard)",
+            "强制 npx reasonix chat (v1.x 新版 Go，无 Dashboard)"
           ],
           "description": "Reasonix 启动模式 / Reasonix launch mode"
         }
