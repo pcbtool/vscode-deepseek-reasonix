@@ -4,6 +4,8 @@
     "title": "🐋 Reasonix",
     "button": {
       "launch": "Open DeepSeek-Reasonix",
+      "launchCode": "Open Reasonix (code + Dashboard)",
+      "launchChat": "Open Reasonix v2 (Go)",
       "dashboard": "Open Dashboard"
     },
     "hint": {

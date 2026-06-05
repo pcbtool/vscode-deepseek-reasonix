@@ -97,7 +97,7 @@ async function launchReasonix() {
 
   if (isChat) {
     // v2 (Go)
-    terminal.sendText('npx reasonix chat');
+    terminal.sendText('npx reasonix@latest chat');
   } else if (useDashboard) {
     // v0.x (TS)，指定 code + dashboard
     const token = generateToken();
@@ -119,10 +119,10 @@ async function launchReasonix() {
       } catch (_) {}
     }
     console.log('[Reasonix] Dashboard URL (pre-known):', dashboardUrl);
-    terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
+    terminal.sendText(`npx reasonix@latest code --dashboard-port ${port}`);
   } else {
     // auto：不传 --dashboard-port，兼容所有版本
-    terminal.sendText('npx reasonix code');
+    terminal.sendText('npx reasonix@latest code');
   }
 
   // 将终端贴靠到右侧分组
@@ -166,7 +166,9 @@ class ReasonixSidebarProvider {
     latestWebview = webviewView;
 
     webviewView.webview.options = { enableScripts: true };
-    webviewView.webview.html = this._buildHtml();
+    webviewView.webview.html = this._buildHtml(
+      vscode.workspace.getConfiguration('reasonix').get('mode', 'auto')
+    );
 
     // 推送初始状态
     const currentMode = vscode.workspace
@@ -209,7 +211,12 @@ class ReasonixSidebarProvider {
     });
   }
 
-  _buildHtml() {
+  _buildHtml(mode) {
+    const modeLabel = mode === 'chat'
+      ? t('sidebar.button.launchChat')
+      : mode === 'code'
+        ? t('sidebar.button.launchCode')
+        : t('sidebar.button.launch');
     return `<!DOCTYPE html>
 <html lang="${t('sidebar.lang')}">
 <head>
@@ -304,7 +311,7 @@ class ReasonixSidebarProvider {
 <body>
   <div class="title">${t('sidebar.title')}</div>
 
-  <button class="btn" id="launchBtn">${t('sidebar.button.launch')}</button>
+  <button class="btn" id="launchBtn">${modeLabel}</button>
   <button class="btn" id="dashboardBtn" disabled>
     ${t('sidebar.button.dashboard')}
   </button>

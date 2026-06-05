@@ -4,6 +4,8 @@
     "title": "🐋 Reasonix",
     "button": {
       "launch": "打开 DeepSeek-Reasonix",
+      "launchCode": "打开 Reasonix (code + Dashboard)",
+      "launchChat": "打开 Reasonix v2 (Go)",
       "dashboard": "打开 Dashboard"
     },
     "hint": {
