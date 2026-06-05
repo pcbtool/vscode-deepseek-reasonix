@@ -119,10 +119,10 @@ async function launchReasonix() {
       } catch (_) {}
     }
     console.log('[Reasonix] Dashboard URL (pre-known):', dashboardUrl);
-    terminal.sendText(`npx reasonix@latest code --dashboard-port ${port}`);
+    terminal.sendText(`npx reasonix code --dashboard-port ${port}`);
   } else {
     // auto：不传 --dashboard-port，兼容所有版本
-    terminal.sendText('npx reasonix@latest code');
+    terminal.sendText('npx reasonix code');
   }
 
   // 将终端贴靠到右侧分组
