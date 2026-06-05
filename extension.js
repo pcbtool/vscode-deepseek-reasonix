@@ -168,9 +168,17 @@ class ReasonixSidebarProvider {
     webviewView.webview.options = { enableScripts: true };
     webviewView.webview.html = this._buildHtml();
 
+    // 推送初始状态
+    const currentMode = vscode.workspace
+      .getConfiguration('reasonix')
+      .get('mode', 'auto');
     webviewView.webview.postMessage({
       command: 'dashboardUrl',
       url: lastDashboardUrl,
+    });
+    webviewView.webview.postMessage({
+      command: 'initMode',
+      mode: currentMode,
     });
 
     webviewView.webview.onDidReceiveMessage((message) => {
@@ -188,6 +196,11 @@ class ReasonixSidebarProvider {
           }
           break;
         }
+        case 'setMode':
+          vscode.workspace
+            .getConfiguration('reasonix')
+            .update('mode', message.mode, vscode.ConfigurationTarget.Global);
+          break;
       }
     });
 
@@ -267,6 +280,25 @@ class ReasonixSidebarProvider {
       margin-bottom: 8px;
       text-align: left;
     }
+    .mode-select {
+      width: 100%;
+      margin-top: 12px;
+      padding: 6px 8px;
+      font-size: 12px;
+      background: var(--vscode-dropdown-background, #2d2d2d);
+      color: var(--vscode-dropdown-foreground, #cccccc);
+      border: 1px solid var(--vscode-dropdown-border, #555);
+      border-radius: 4px;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .mode-select-label {
+      font-size: 11px;
+      opacity: 0.5;
+      margin-top: 14px;
+      margin-bottom: 2px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
@@ -279,6 +311,13 @@ class ReasonixSidebarProvider {
 
   <div class="hint">${t('sidebar.hint.retry')}</div>
 
+  <div class="mode-select-label">${t('sidebar.modeLabel')}</div>
+  <select class="mode-select" id="modeSelect">
+    <option value="auto">${t('sidebar.modeAuto')}</option>
+    <option value="code">${t('sidebar.modeCode')}</option>
+    <option value="chat">${t('sidebar.modeChat')}</option>
+  </select>
+
   <div class="links">
     <div class="section-title">${t('sidebar.authorToolsTitle')}</div>
     ${renderLinks()}
@@ -288,6 +327,7 @@ class ReasonixSidebarProvider {
     (function() {
       const vscode = acquireVsCodeApi();
       const dashboardBtn = document.getElementById('dashboardBtn');
+      const modeSelect = document.getElementById('modeSelect');
 
       window.addEventListener('message', function(event) {
         const msg = event.data;
@@ -299,7 +339,15 @@ class ReasonixSidebarProvider {
             dashboardBtn.disabled = true;
             delete dashboardBtn.dataset.url;
           }
+        } else if (msg.command === 'initMode' || msg.command === 'setMode') {
+          if (msg.mode) {
+            modeSelect.value = msg.mode;
+          }
         }
+      });
+
+      modeSelect.addEventListener('change', function() {
+        vscode.postMessage({ command: 'setMode', mode: this.value });
       });
 
       document.getElementById('launchBtn').addEventListener('click', function() {

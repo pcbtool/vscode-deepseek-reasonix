@@ -9,6 +9,10 @@
     "hint": {
       "retry": "Click again after closing the terminal"
     },
+    "modeLabel": "Launch Mode",
+    "modeAuto": "Auto (auto)",
+    "modeCode": "Legacy code + Dashboard",
+    "modeChat": "New chat",
     "authorToolsTitle": "Author's Other Tools",
     "links": [
       {

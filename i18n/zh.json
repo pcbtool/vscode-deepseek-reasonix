@@ -9,6 +9,10 @@
     "hint": {
       "retry": "关闭终端后可再次点击打开"
     },
+    "modeLabel": "启动模式",
+    "modeAuto": "自动 (auto)",
+    "modeCode": "旧版 code + Dashboard",
+    "modeChat": "新版 chat",
     "authorToolsTitle": "作者其他工具",
     "links": [
       {
